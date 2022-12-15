@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Recipes
+{% endblock %}
+    
+{% block main %}
+
+    <form action="/recipes" method="get">
+        <div class="mb-3">
+            <input autocomplete="off" autofocus class="form-control text-center mx-auto w-auto" name="query" id="query-main" placeholder="Pasta Carbonara" type="text"
+                {% if query %}value="{{query}}"{% endif %}/>
+        </div>
+        <button class="btn btn-outline-success mb-3" type="submit">Get Recipe</button>
+    </form>
+    {% if data %}
+        <div class="row mx-auto w-auto">
+            {% for recipe in data %}
+                <div class="col">
+                    <div class="card mb-3" style="width: 450px;">
+                        <img class="card-img" style="filter: brightness(60%);" src="static\images\icon_{{ recipe['id'] }}.jpg" alt="Rex">
+                        <div class="card-img-overlay text-white">
+                            <h2 class="card-title mt-5">{{ recipe['title'] }}</h2>
+                            <button type="button" class="btn btn-light mt-5" data-bs-toggle="modal" data-bs-target="#recipes">View the recipe</button>
+                        </div>
+                    </div>
+                    
+                    <div id="recipes" class="modal fade" tabindex="-1">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">{{ recipe['title'] }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body text-start">
+                                    <p><b>Servings:</b> {{ recipe['servings'] }}</p>
+                                    <p class="mb-0"><b>Ingredient:</b></p>
+                                    {% for ingredient in recipe['ingredients']%}
+                                        <p class="mb-0"> {{ ingredient }} </p>
+                                    {% endfor %}
+                                    <p class="mb-0 mt-3"><b>Instructions:</b></p>
+                                    <p>{{ recipe['instructions'] }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+{% endblock %}

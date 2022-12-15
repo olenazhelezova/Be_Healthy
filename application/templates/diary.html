@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    My diary
+{% endblock %}
+    
+{% block main %}
+    <div class="top">
+        <form class="row">
+        <label for="date" class="col-1 col-form-label"><b>Date</b></label>
+        <div class="col col-lg-2">
+            <div class="input-group date" id="datepicker">
+            <input type="button" class="form-control btn btn-outline-success" id="date"/>
+            <span class="input-group-append">
+                <span class="input-group-text bg-light d-block border border-success">
+                <i class="fa fa-calendar"></i>
+                </span>
+            </span>
+            </div>
+        </div>
+        </form>
+    </div>
+
+
+    <table class="table table-responsive-sm" id="breakfast">
+        <thead>
+            <tr>
+                <th class="text-start">Breakfast</th><th class="col-1">Weight</th>
+                <th class="col-1">Fat</th><th class="col-1">Carbs</th>
+                <th class="col-1">Prot</th><th class="col-1">Cals</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+
+{% endblock %}
