@@ -1,0 +1,48 @@
+/* Size for brand */
+nav .navbar-brand
+{
+    font-size: xx-large;
+}
+
+/* Colors for brand */
+nav .navbar-brand .yellow
+{
+    color: #ffc107;
+}
+nav .navbar-brand .green
+{
+    color: #28a745;
+}
+
+#nutrition-data-table {
+    text-align: left;
+    margin-top: 50px;
+}
+
+.form-control:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+} 
+
+.table-hover {
+    color: #ffc107
+}
+
+.input-group-append {
+    cursor: pointer;
+}
+
+.input-group-text {
+    color: #ffc107;
+}
+
+.dropdown-item.active, .dropdown-item:active {
+    background-color: #28a745;
+}
+
+
+.bootstrap-autocomplete {
+    margin-right: auto!important;
+    margin-left: auto!important;
+    position: inherit!important;
+}
