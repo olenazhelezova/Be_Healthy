@@ -1,0 +1,9 @@
+food_search_key = {
+        "X-RapidAPI-Key": "",
+	    "X-RapidAPI-Host": "nutrition-by-api-ninjas.p.rapidapi.com"
+    }
+
+recipe_search_key = {
+        "X-RapidAPI-Key": "",
+        "X-RapidAPI-Host": "recipe-by-api-ninjas.p.rapidapi.com"
+    }
