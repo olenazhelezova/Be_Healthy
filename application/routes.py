@@ -1,5 +1,5 @@
 from application import app
-from flask import redirect, render_template, request, session, flash, get_flashed_messages, Response
+from flask import redirect, render_template, request, session, flash, get_flashed_messages, Response, jsonify
 from flask_session import Session
 from application.search import food_search, recipe_search
 from application.database import get_connection
@@ -93,7 +93,7 @@ def autocomplete():
     cur = con.cursor()
     user_input = request.args.get("q")
     foods = cur.execute("SELECT name FROM food_list WHERE name LIKE :in || '%' LIMIT 7", {'in': user_input}).fetchall()
-    food_list = list(map(lambda a : a[0], foods))
+    food_list = list(map(lambda x: x.lower(), list(map(lambda a : a[0], foods))))
     resp = Response(json.dumps(list(food_list)))
     resp.headers['Content-Type'] = 'application/json'
     con.commit()
@@ -167,3 +167,34 @@ def bmi():
 @login_required
 def diary():
     return render_template("diary.html")
+
+
+@app.route("/validate-email", methods=["POST"])
+def validate_registration():
+    con = get_connection()
+    cur = con.cursor()
+    if request.method == "POST":
+        email_adress = request.get_json()["email"]
+        user = cur.execute("SELECT * FROM users WHERE email = ?", [email_adress]).fetchone()
+        con.commit()
+        if user:
+            return jsonify({"user_exists": "true"})
+        else:
+            return jsonify({"user_exists": "false"})
+
+
+@app.route("/validate-password", methods=["POST"])
+def validate_login_password():
+    con = get_connection()
+    cur = con.cursor()
+    if request.method == "POST":
+        email_adress = request.get_json()["email"]
+        password = request.get_json()["password"]
+        user = cur.execute("SELECT * FROM users WHERE email = ?", [email_adress]).fetchone()
+        con.commit()
+        if user is None or not check_password_hash(user['hash'], password):
+            return jsonify({"user_password": "false"})
+        else:
+            return jsonify({"user_password": "true"})
+
+

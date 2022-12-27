@@ -1,24 +1,32 @@
 {% extends "layout.html" %}
 
+{% block script %}
+    <script defer src="/static/js/validation-registration.js"></script>
+{% endblock %}
+
+
 {% block title %}
     Register
 {% endblock %}
     
 {% block main %}
-    <form action="/register" method="post">
-        <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="email" name="email" placeholder="Email" type="text" required>
+    <form id="registration-form" action="/register" method="post">
+        <div class="mb-2 input-control">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="email" name="email" placeholder="Email" type="text"> 
+            <div class="error"></div>
         </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text" required>            
+        <div class="mb-2 input-control">
+            <input class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text">  
+            <div class="error"></div>          
         </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password" required>
+        <div class="mb-2 input-control">
+            <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password">
+            <div class="error"></div>
         </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" id="password" name="confirmation" placeholder="Password (again)" type="password" required>
+        <div class="mb-2 input-control">
+            <input class="form-control mx-auto w-auto" id="confirmation" name="confirmation" placeholder="Password (again)" type="password">
+            <div class="error"></div>
         </div>
         <button class="btn btn-outline-success mb-3" type="submit">Register</button>
     </form>
-
 {% endblock %}

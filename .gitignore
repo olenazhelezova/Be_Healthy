@@ -1,1 +1,5 @@
 __pycache__*
+application/database.db
+application/config.py
+flask_session
+venv

@@ -11,8 +11,11 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
-        <script src="/static/code.js"></script>
-        <script src="/static/autocomplete.js"></script>
+        <script src="/static/js/code.js"></script>
+        <script src="/static/js/autocomplete.js"></script>
+        {% block script %}{% endblock %}
+        <script src="/static/js/validation-general.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
         <link href="/static/styles.css" rel="stylesheet">
         <title>BeHealthy{% block title %}{% endblock %}</title>
     </head>

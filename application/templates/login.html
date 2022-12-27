@@ -1,16 +1,22 @@
 {% extends "layout.html" %}
 
+{% block script %}
+    <script defer src="/static/js/validation-login.js"></script>
+{% endblock %}
+
 {% block title %}
     Log In
 {% endblock %}
     
 {% block main %}
-    <form action="/login" method="post">
-        <div class="mb-3">
-            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="email" name="email" placeholder="Email" type="text" required>
+    <form id="login-form" action="/login" method="post">
+        <div class="mb-2 input-control">
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="email" name="email" placeholder="Email" type="text">
+            <div class="error"></div>
         </div>
-        <div class="mb-3">
-            <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password" required>
+        <div class="mb-2 input-control">
+            <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password">
+            <div class="error"></div>
         </div>
         <button class="btn btn-outline-success mb-3" type="submit">Log In</button>
     </form>
