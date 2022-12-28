@@ -29,14 +29,15 @@ const validateInputsLogin = (onValid) => {
     const userValidPassword = userPasswordPromise(emailValue, passwordValue)
 
     userQueryPromise.then((userExists) => {
-        if (!userExists & emailValue != '') {
-            setError(email, 'This user is not registered. Try to register instead.');
-            return;
-        }
         if(emailValue === '') {
             setError(email, 'Email is required');
-        } else if (!isValidEmail(emailValue)) {
-            setError(email, 'Provide a valid email address');
+        } else if (!userExists) {
+                if (!isValidEmail(emailValue)) {
+                    setError(email, 'Provide a valid email address');
+                } else if (emailValue != '') {
+                    setError(email, 'This user is not registered. Try to register instead.');
+                    return;
+                };
         } else {
             setSuccess(email);
         };

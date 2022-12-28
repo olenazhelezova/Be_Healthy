@@ -10,20 +10,21 @@
 {% endblock %}
     
 {% block main %}
-    <form id="registration-form" action="/register" method="post">
-        <div class="mb-2 input-control">
+    <form class="m-auto" id="registration-form" style="width:300px;"
+     action="/register" method="post">
+        <div class="mb-3 input-control">
             <input autocomplete="off" autofocus class="form-control mx-auto w-auto" id="email" name="email" placeholder="Email" type="text"> 
             <div class="error"></div>
         </div>
-        <div class="mb-2 input-control">
+        <div class="mb-3 input-control">
             <input class="form-control mx-auto w-auto" id="username" name="username" placeholder="Username" type="text">  
             <div class="error"></div>          
         </div>
-        <div class="mb-2 input-control">
-            <input class="form-control mx-auto w-auto" id="password" name="password" placeholder="Password" type="password">
+        <div class="mb-3 input-control">
+            <input class="form-control mx-auto w-auto " id="password" name="password" placeholder="Password" type="password">
             <div class="error"></div>
         </div>
-        <div class="mb-2 input-control">
+        <div class="mb-3 input-control">
             <input class="form-control mx-auto w-auto" id="confirmation" name="confirmation" placeholder="Password (again)" type="password">
             <div class="error"></div>
         </div>

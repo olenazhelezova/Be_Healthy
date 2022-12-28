@@ -121,7 +121,7 @@ def register():
         if check_email(email) is None:
             return apology("email is invalid", 400)
         if check_password(password) == None:
-            return apology("password must be 8-16 characters and include at least one lowercase letter, one uppercase letter, digit and symbol", 400)
+            return apology("Password must be at least 8 characters, include lowercase, uppercase, digit and symbol", 400)
         hash = generate_password_hash(password, method='pbkdf2:sha256', salt_length=8)
         cur.execute("INSERT INTO users (email, username, hash) VALUES (?, ?, ?)", (email, username, hash))
         con.commit()

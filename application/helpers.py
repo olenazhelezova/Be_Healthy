@@ -12,7 +12,7 @@ def check_email(email):
         return email
 
 def check_password(pswd):
-    reg = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{8,16}$"
+    reg = r"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{8,}$"
     res = re.search(reg, pswd)
     if res:
         return pswd

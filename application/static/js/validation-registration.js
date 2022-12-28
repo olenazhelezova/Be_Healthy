@@ -12,6 +12,7 @@ registrationForm.addEventListener('submit', e => {
 });
 
 const validateInputsRegistration = (onValid) => {
+
     const usernameValue = username.value.trim();
     const emailValue = email.value.trim();
     const passwordValue = password.value.trim();
@@ -40,7 +41,7 @@ const validateInputsRegistration = (onValid) => {
         if(passwordValue === '') {
             setError(password, 'Password is required');
         } else if (!isValidPassword(passwordValue)) {
-            setError(password, 'Password must be 8-16 characters and include at least one lowercase letter, one uppercase letter, digit and symbol.')
+            setError(password, 'Password must be at least 8 characters, including one lowercase, one uppercase, digit and symbol.')
         } else {
             setSuccess(password);
         }
@@ -49,6 +50,8 @@ const validateInputsRegistration = (onValid) => {
             setError(password2, 'Please confirm your password');
         } else if (password2Value !== passwordValue) {
             setError(password2, "Passwords doesn't match");
+        } else if (!isValidPassword(password2Value)) {
+            setError(password2, 'Password is invalid.')
         } else {
             setSuccess(password2);
         }

@@ -1,10 +1,8 @@
 const bmiForm = document.getElementById("bmi-form");
 const weight = document.getElementById("weight");
 const height = document.getElementById("height");
-
-console.log(bmiForm);
-console.log(weight);
-console.log(height);
+const weightMs = document.getElementById("weight_ms");
+const heightMs = document.getElementById("height_ms");
 
 bmiForm.addEventListener('submit', e => {
     e.preventDefault();
@@ -16,10 +14,12 @@ bmiForm.addEventListener('submit', e => {
 const validateBmiForm = (onValid) => {
     const weightValue = weight.value.trim();
     const heightValue = height.value.trim();
+    const weightMsValue = weightMs.value.trim();
+    const heightMsValue = heightMs.value.trim();
 
     if (weightValue === "") {
         setError(weight, "Please provide your weight.")
-    } else if (weightValue <= 35) {
+    } else if ((weightMsValue == "kg" & (weightValue < 40 || weightValue > 300)) || (weightMsValue == "lb" & (weightValue < 88 || weightValue > 661))) {
         setError(weight, "Please provide correct weight.")
     } else {
         setSuccess(weight)
@@ -27,7 +27,7 @@ const validateBmiForm = (onValid) => {
 
     if (heightValue === "") {
         setError(height, "Please provide your height.")
-    } else if (heightValue <= 50) {
+    } else if ((heightMsValue == "cm" & (heightValue < 140 || heightValue > 250)) || (heightMsValue == "in" & (heightValue < 55 || heightValue > 98))) {
         setError(height, "Please provide correct height.")
     } else {
         setSuccess(height)
