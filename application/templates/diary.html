@@ -1,17 +1,24 @@
 {% extends "layout.html" %}
 
+{% block script %}
+    <script defer src="/static/js/diary.js"></script>
+{% endblock %}
+
 {% block title %}
     My diary
 {% endblock %}
     
 {% block main %}
-    <div class="w-75 m-auto">
+    <script type="application/javascript">
+        var diary_date = "{{ date }}"
+    </script>
+    <div class="m-auto" style="width:800px">
         <div class="top">
             <form class="row">
             <label for="date" class="col-1 col-form-label"><b>Date</b></label>
-            <div class="col col-lg-2">
-                <div class="input-group date" id="datepicker">
-                <input type="button" class="form-control btn btn-outline-success" id="date"/>
+            <div class="col w-auto">
+                <div class="input-group date" id="datepicker" style="height:30px;width:160px">
+                <input type="button" class="form-control btn btn-outline-success" id="date">
                 <span class="input-group-append">
                     <span class="input-group-text bg-light d-block border border-success">
                     <i class="fa fa-calendar"></i>
@@ -21,62 +28,84 @@
             </div>
             </form>
         </div>
-        <table class="table table-responsive-sm mt-5" id="my-food-diary">
-            <thead>
-                <tr>
-                    <th class="text-start">My food diary</th><th class="col-1">Weight</th>
-                    <th class="col-1">Fat</th><th class="col-1">Carbs</th>
-                    <th class="col-1">Prot</th><th class="col-1">Cals</th>
-                </tr>
-            </thead>
-        </table>
-        <table class="table table-responsive-sm" id="breakfast">
-            <thead>
-                <tr>
-                    <th class="text-start">Breakfast</th><th class="col-1">Weight</th>
-                    <th class="col-1">Fat</th><th class="col-1">Carbs</th>
-                    <th class="col-1">Prot</th><th class="col-1">Cals</th>
-                </tr>
-            </thead>
-            <tbody>
 
-            </tbody>
-        </table>
-        <table class="table table-responsive-sm" id="lunch">
-            <thead>
-                <tr>
-                    <th class="text-start">Lunch</th><th class="col-1">Weight</th>
-                    <th class="col-1">Fat</th><th class="col-1">Carbs</th>
-                    <th class="col-1">Prot</th><th class="col-1">Cals</th>
-                </tr>
-            </thead>
-            <tbody>
-                
-            </tbody>
-        </table>
-        <table class="table table-responsive-sm" id="dinner">
-            <thead>
-                <tr>
-                    <th class="text-start">Dinner</th><th class="col-1">Weight</th>
-                    <th class="col-1">Fat</th><th class="col-1">Carbs</th>
-                    <th class="col-1">Prot</th><th class="col-1">Cals</th>
-                </tr>
-            </thead>
-            <tbody>
-                
-            </tbody>
-        </table>
-        <table class="table table-responsive-sm" id="snacks">
-            <thead>
-                <tr>
-                    <th class="text-start">Snacks/other</th><th class="col-1">Weight</th>
-                    <th class="col-1">Fat</th><th class="col-1">Carbs</th>
-                    <th class="col-1">Prot</th><th class="col-1">Cals</th>
-                </tr>
-            </thead>
-            <tbody>
-                
-            </tbody>
-        </table>
+        <div>
+            <table class="table table-responsive-sm table-borderless mb-5 mt-5" id="my-food-diary">
+                <thead>
+                    <tr>
+                        <th class="text-start">My food diary</th>
+                        <th class="col-1">Weight</th><th class="col-1">Fat</th><th class="col-1">Carbs</th>
+                        <th class="col-1">Prot</th><th class="col-1">Cals</th><th class="col-1"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if total_per_day["fat"] is not none %}
+                        <tr>
+                            <td class="text-start"></td><td class="col-1"></td>
+                            <td class="col-1 small">{{ "%.1f"|format(total_per_day["fat"]) }}</td>
+                            <td class="col-1 small">{{ "%.1f"|format(total_per_day["carbs"]) }}</td>
+                            <td class="col-1 small">{{ "%.1f"|format(total_per_day["prot"]) }}</td>
+                            <th class="col-1 small">{{ total_per_day["cals"] }}</th>
+                            <td class="col-1"></td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+        {% for meal in data.keys() %}
+            <div class="{{ meal }}">
+                <table class="table table-responsive-sm">
+                    {% if data[meal]|length > 0 %}
+                        <thead>
+                            <tr>
+                                <th class="text-start">{{ meal }}</th><th class="col-1"></th>
+                                <th class="col-1">{{ "%.1f"|format(total_data[meal]["fat"]) }}</th>
+                                <th class="col-1">{{ "%.1f"|format(total_data[meal]["carbs"]) }}</th>
+                                <th class="col-1">{{ "%.1f"|format(total_data[meal]["prot"]) }}</th>
+                                <th class="col-1">{{ total_data[meal]["cals"] }}</th>
+                                <th class="col-1"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in data[meal] %}
+                                <tr>
+                                    <td class="text-start"><a href="/?query={{ row['food_name'] }}" class="btn text-success m-0 p-0">{{ row["food_name"] }}</a></td>
+                                    <td class="col-1">{{ row["weight"] }}g</td>
+                                    <td class="col-1">{{ row["fat"] }}</td>
+                                    <td class="col-1">{{ row["carbs"] }}</td>
+                                    <td class="col-1">{{ row["prot"] }}</td>
+                                    <td class="col-1">{{ row["cals"] }}</td>
+                                    <td><a href="/delete?id={{ row['id'] }}" class="btn text-success m-0 p-0 px-1"><i class="fa fa-trash" aria-hidden="true"></i></a></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    {% else %}
+                        <tr>
+                            <th class="text-start">{{ meal }}</th>
+                        </tr>
+                    {% endif %}
+                </table>
+                <div type="button" class="add-meal-button text-success text-start m-3 fw-bold">
+                    <i class="add-item fa fa-plus" aria-hidden="true"></i>
+                    <span class="caption">Add item</span>
+                </div>
+            </div>
+        {% endfor %}
+        <div div class="modal fade" id="myModal" aria-hidden="true" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Opps! Looks like something went wrong.</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <p class="modal-error">Check your internet connection and try again.</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-success" data-bs-dismiss="modal" aria-label="Close">Close</button>
+                </div>
+              </div>
+            </div>
+          </div>
     </div>
 {% endblock %}

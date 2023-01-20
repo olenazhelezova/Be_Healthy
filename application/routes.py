@@ -5,6 +5,7 @@ from application.search import food_search, recipe_search
 from application.database import get_connection
 from .helpers import apology, check_email, check_password, login_required, get_bmi, metric_weight, metric_height, get_category
 from werkzeug.security import check_password_hash, generate_password_hash
+from datetime import datetime
 import json
 
 # Ensure templates are auto-reloaded
@@ -14,6 +15,10 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["SESSION_PERMANENT"] = False
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
+
+@app.errorhandler(404)
+def not_found(e):
+    return render_template('apology.html', message="Page not found", code="404")
 
 
 @app.after_request
@@ -26,24 +31,14 @@ def after_request(response):
 
 @app.route("/home")
 @app.route("/")
+@app.route("/index")
 def index():
-    """con = get_connection()
-    cur = con.cursor()
-    user_id = session["user_id"]
-    if user_id:
-        if request.method == 'POST':
-            if request.form["add_food"]:
-                cur.execute("INSERT INTO food_diary (user_id, food_name, date, meal, weight, fat, carbs, prot, cals) VALUES (user_id, item["name"], ?, ?, ?, ?, ?, ?, ?),", () )
-        cur.close()
-"""
     query = request.args.get("query")
     data = None
     if query != None:
         data = food_search(query)
     if data is not None and len(data) < 1:
         return render_template("index.html")
-
-    
     return render_template("index.html", data = data, query = query)
 
 
@@ -166,7 +161,26 @@ def bmi():
 @app.route("/diary")
 @login_required
 def diary():
-    return render_template("diary.html")
+    user_id = session["user_id"]
+    current_date = datetime.now()
+    current_date = f'{current_date.day}.{current_date.month}.{current_date.year}'
+    date = request.args.get('date', current_date)
+    con = get_connection()
+    cur = con.cursor()
+    breakfast = cur.execute("SELECT id, food_name, weight, fat, carbs, prot, cals FROM food_diary WHERE user_id=? AND meal=? AND date=?", [user_id, "Breakfast", date]).fetchall()
+    total_breakfast = cur.execute("SELECT SUM(fat) as fat, SUM(carbs) as carbs, SUM(prot) as prot, SUM(cals) as cals FROM food_diary WHERE user_id=? AND meal=? AND date=?", [user_id, "Breakfast", date]).fetchone()
+    lunch = cur.execute("SELECT id, food_name, weight, fat, carbs, prot, cals FROM food_diary WHERE user_id=? AND meal=? AND date=?", [user_id, "Lunch", date]).fetchall()
+    total_lunch = cur.execute("SELECT SUM(fat) as fat, SUM(carbs) as carbs, SUM(prot) as prot, SUM(cals) as cals FROM food_diary WHERE user_id=? AND meal=? AND date=?", [user_id, "Lunch", date]).fetchone()
+    dinner = cur.execute("SELECT id, food_name, weight, fat, carbs, prot, cals FROM food_diary WHERE user_id=? AND meal=? AND date=?", [user_id, "Dinner", date]).fetchall()
+    total_dinner = cur.execute("SELECT SUM(fat) as fat, SUM(carbs) as carbs, SUM(prot) as prot, SUM(cals) as cals FROM food_diary WHERE user_id=? AND meal=? AND date=?", [user_id, "Dinner", date]).fetchone()
+    other = cur.execute("SELECT id, food_name, weight, fat, carbs, prot, cals FROM food_diary WHERE user_id=? AND meal=? AND date=?", [user_id, "Snacks/other", date]).fetchall()
+    total_other = cur.execute("SELECT SUM(fat) as fat, SUM(carbs) as carbs, SUM(prot) as prot, SUM(cals) as cals FROM food_diary WHERE user_id=? AND meal=? AND date=?", [user_id, "Snacks/other", date]).fetchone()
+    total = cur.execute("SELECT SUM(fat) as fat, SUM(carbs) as carbs, SUM(prot) as prot, SUM(cals) as cals FROM food_diary WHERE user_id=? AND date=?", [user_id, date]).fetchone()
+    data = {"Breakfast": breakfast, "Lunch": lunch, "Dinner": dinner, "Snacks/other": other}
+    total_data = {"Breakfast": total_breakfast, "Lunch": total_lunch, "Dinner": total_dinner, "Snacks/other": total_other}
+    total_per_day = total 
+    con.commit()
+    return render_template("diary.html", data=data, total_data=total_data, date=date, total_per_day=total_per_day)
 
 
 @app.route("/validate-email", methods=["POST"])
@@ -197,4 +211,45 @@ def validate_login_password():
         else:
             return jsonify({"user_password": "true"})
 
+@app.route("/food-search-diary", methods=["GET"])
+def food_search_diary():
+    query = request.args.get('query')
+    data = None
+    if query != None:
+        data = food_search(query)
+    if data is not None and len(data) < 1:
+        return jsonify([])
+    return jsonify(data)
 
+@app.route("/add-food", methods=["POST"])
+def add_food():
+    if request.method == "POST":
+        con = get_connection()
+        cur = con.cursor()
+        user_id = session["user_id"]
+        food_data = request.get_json()
+        food_name = food_data["data"]["name"]
+        date = food_data["date"]
+        meal = food_data["meal"]
+        weight = int(food_data["data"]["serving_size_g"])
+        fat = round(float(food_data["data"]["fat_total_g"]), 1)
+        carbs = round(float(food_data["data"]["carbohydrates_total_g"]), 1)
+        prot = round(float(food_data["data"]["protein_g"]), 1)
+        cals = int(food_data["data"]["calories"])
+        print(user_id, food_name, date, meal, weight, fat, carbs, prot, cals)
+        cur.execute("INSERT INTO food_diary (user_id, food_name, date, meal, weight, fat, carbs, prot, cals) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+        [user_id, food_name, date, meal, weight, fat, carbs, prot, cals])
+        con.commit()
+        return jsonify({"food_added": True})
+    return jsonify({"food_added": False})
+
+
+@app.route('/delete', methods=['GET'])
+def delete():
+    con = get_connection()
+    cur = con.cursor()
+    id = request.args.get("id")
+    cur.execute("DELETE FROM food_diary WHERE id = ?", [id])
+    con.commit()
+    return redirect(request.referrer or "diary.html")
+    

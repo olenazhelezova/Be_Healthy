@@ -65,3 +65,6 @@ nav .navbar-brand .green
     font-size: 9px;
     height: 13px;
 }
+.input-group .bootstrap-autocomplete {
+    position: absolute !important;
+}
