@@ -1,7 +1,5 @@
 # **Be_Healthy**
 
-#### **Video Demo:** <>
-
 #### **Description:**
 
 Using the **"Be healthy"** web application, the user can easily find out nutritional facts about any product, find recipes and keep his own food diary.
